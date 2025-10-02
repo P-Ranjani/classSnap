@@ -92,201 +92,260 @@ const StudentProfile = ({ student, onBack }) => {
       minHeight: '100vh',
       backgroundColor: 'white',
       display: 'flex',
-      flexDirection: 'column',
-      fontFamily: 'Arial, sans-serif'
+      fontFamily: 'Arial, sans-serif',
+      margin: 0,
+      padding: 0
     }}>
+      {/* Left Sidebar */}
       <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        width: '300px',
+        backgroundColor: '#f8f9fa',
         padding: '20px',
-        borderBottom: '1px solid #e0e0e0',
-        backgroundColor: '#f8f9fa'
+        borderRight: '1px solid #e0e0e0',
+        minHeight: '100vh'
       }}>
-        <button style={{
-          fontSize: '24px',
-          cursor: 'pointer',
-          color: '#666',
-          background: 'none',
-          border: 'none',
-          padding: '5px 10px'
-        }} onClick={onBack}>←</button>
-        
-        <div style={{
-          fontSize: '24px',
-          fontWeight: 'bold',
-          color: '#333',
-          flex: 1,
-          textAlign: 'center'
-        }}>{student.name}</div>
-        
-        <div style={{ position: 'relative' }}>
-          <button 
-            style={{
-              padding: '8px 20px',
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 'bold'
-            }}
-            onClick={() => setShowProfileMenu(!showProfileMenu)}
-          >
-            Profile
-          </button>
-          {showProfileMenu && (
-            <div style={{
-              position: 'absolute',
-              top: '45px',
-              right: '0',
-              backgroundColor: 'white',
-              border: '1px solid #e0e0e0',
-              borderRadius: '6px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              zIndex: 1000,
-              minWidth: '150px'
-            }}>
-              <div 
-                style={{
-                  padding: '12px 20px',
-                  cursor: 'pointer',
-                  borderBottom: '1px solid #f0f0f0',
-                  fontSize: '14px',
-                  color: '#333'
-                }}
-                onClick={handleViewProfile}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
-              >
-                View Profile
-              </div>
-              <div 
-                style={{
-                  padding: '12px 20px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: '#333'
-                }}
-                onClick={handleLogout}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
-              >
-                Logout
-              </div>
-            </div>
-          )}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
+          <button style={{
+            marginRight: '15px',
+            fontSize: '20px',
+            color: '#666',
+            cursor: 'pointer',
+            background: 'none',
+            border: 'none',
+            padding: '5px 10px'
+          }} onClick={onBack}>←</button>
+          <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#333' }}>{student.name}</span>
         </div>
-      </div>
-
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '40px 20px',
-        backgroundColor: '#f8f9fa'
-      }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
-        }}>
-          <CircularProgress percentage={attendancePercentage} />
+        
+        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+          <div style={{ position: 'relative', width: '120px', height: '120px', margin: '0 auto 20px' }}>
+            <svg 
+              style={{ width: '120px', height: '120px', transform: 'rotate(-90deg)' }}
+              viewBox="0 0 120 120"
+            >
+              <circle cx="60" cy="60" r="50" stroke="#e0e0e0" strokeWidth="12" fill="transparent" />
+              <circle
+                cx="60" cy="60" r="50" stroke="#4CAF50" strokeWidth="12" fill="transparent"
+                strokeDasharray={2 * Math.PI * 50}
+                strokeDashoffset={2 * Math.PI * 50 - (attendancePercentage / 100) * 2 * Math.PI * 50}
+                strokeLinecap="round" style={{ transition: 'stroke-dashoffset 0.3s ease' }}
+              />
+            </svg>
+            <div style={{
+              position: 'absolute', top: '50%', left: '50%',
+              transform: 'translate(-50%, -50%)', fontSize: '24px',
+              fontWeight: 'bold', color: '#333'
+            }}>
+              {attendancePercentage}%
+            </div>
+          </div>
           <div style={{
-            marginTop: '10px',
             fontSize: '16px',
             color: '#666'
           }}>Overall Attendance</div>
         </div>
+
+        <div style={{ marginBottom: '15px', padding: '10px 0', borderBottom: '1px solid #e0e0e0' }}>
+          <div style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>Total Days:</div>
+          <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#333' }}>{history.length}</div>
+        </div>
+
+        <div style={{ marginBottom: '15px', padding: '10px 0', borderBottom: '1px solid #e0e0e0' }}>
+          <div style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>Present Days:</div>
+          <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#4CAF50' }}>
+            {history.filter(record => 
+              PERIODS.every(period => record.periods[period] === 'P')
+            ).length}
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '15px', padding: '10px 0', borderBottom: '1px solid #e0e0e0' }}>
+          <div style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>Absent Days:</div>
+          <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#f44336' }}>
+            {history.filter(record => 
+              PERIODS.some(period => record.periods[period] === 'A')
+            ).length}
+        </div>
       </div>
 
-      <div style={{
-        padding: '20px',
-        overflow: 'auto'
-      }}>
-        <table style={{
-          width: '100%',
-          maxWidth: '900px',
-          margin: '0 auto',
-          borderCollapse: 'collapse',
-          backgroundColor: 'white',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-        }}>
-          <thead>
-            <tr>
-              <th style={{
-                backgroundColor: '#f8f9fa',
-                padding: '12px 8px',
-                textAlign: 'left',
-                border: '1px solid #e0e0e0',
-                fontWeight: 'bold',
-                color: '#333',
+        <div style={{ position: 'absolute', bottom: '20px', left: '20px' }}>
+          <div style={{ position: 'relative' }}>
+            <button 
+              style={{
+                padding: '8px 20px',
+                backgroundColor: '#4CAF50',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
                 fontSize: '14px',
-                width: '140px'
-              }}>Day</th>
-              {PERIODS.map(period => (
-                <th key={period} style={{
+                fontWeight: 'bold'
+              }}
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
+            >
+              Profile
+            </button>
+            {showProfileMenu && (
+              <div style={{
+                position: 'absolute',
+                bottom: '45px',
+                left: '0',
+                backgroundColor: 'white',
+                border: '1px solid #e0e0e0',
+                borderRadius: '6px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                zIndex: 1000,
+                minWidth: '150px'
+              }}>
+                <div 
+                  style={{
+                    padding: '12px 20px',
+                    cursor: 'pointer',
+                    borderBottom: '1px solid #f0f0f0',
+                    fontSize: '14px',
+                    color: '#333'
+                  }}
+                  onClick={handleViewProfile}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                >
+                  View Profile
+                </div>
+                <div 
+                  style={{
+                    padding: '12px 20px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    color: '#333'
+                  }}
+                  onClick={handleLogout}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                >
+                  Logout
+              </div>
+            </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side - Attendance Table */}
+      <div style={{
+        flex: 1,
+        padding: '10px',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        overflow: 'hidden'
+      }}>
+        <h2 style={{ 
+          marginBottom: '10px', 
+          fontSize: '18px', 
+          fontWeight: 'bold', 
+          color: '#333',
+          flexShrink: 0
+        }}>
+          Attendance History
+        </h2>
+        
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden'
+        }}>
+          <table style={{
+            width: '100%',
+            height: '100%',
+            borderCollapse: 'collapse',
+            backgroundColor: 'white',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            tableLayout: 'fixed'
+          }}>
+            <thead>
+              <tr>
+                <th style={{
                   backgroundColor: '#f8f9fa',
-                  padding: '12px 8px',
-                  textAlign: 'center',
+                  padding: '4px 3px',
+                  textAlign: 'left',
                   border: '1px solid #e0e0e0',
                   fontWeight: 'bold',
                   color: '#333',
-                  fontSize: '14px'
-                }}>{period}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {history.map((record, index) => (
-              <tr key={`${record.date}-${index}`} style={{
-                backgroundColor: index % 2 === 0 ? 'white' : '#f9f9f9'
-              }}>
-                <td style={{
-                  padding: '12px 8px',
-                  textAlign: 'left',
-                  border: '1px solid #e0e0e0',
-                  fontSize: '14px'
-                }}>
-                  <div style={{
-                    fontWeight: '500',
-                    color: '#555'
-                  }}>
-                    {record.day}
-                    <div style={{ fontSize: '11px', color: '#999' }}>{record.date}</div>
-                  </div>
-                </td>
+                  fontSize: '12px',
+                  width: '20%',
+                  height: '25px'
+                }}>Day</th>
                 {PERIODS.map(period => (
-                  <td key={`${record.date}-${period}`} style={{
-                    padding: '12px 8px',
+                  <th key={period} style={{
+                    backgroundColor: '#f8f9fa',
+                    padding: '4px 3px',
                     textAlign: 'center',
                     border: '1px solid #e0e0e0',
-                    fontSize: '14px'
-                  }}>
-                    <div style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      fontWeight: 'bold',
-                      fontSize: '12px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      margin: '0 auto',
-                      backgroundColor: record.periods[period] === 'P' ? '#4CAF50' : '#f44336',
-                      color: 'white'
-                    }}>
-                      {record.periods[period]}
-                    </div>
-                  </td>
+                    fontWeight: 'bold',
+                    color: '#333',
+                    fontSize: '12px',
+                    width: `${80/PERIODS.length}%`,
+                    height: '25px'
+                  }}>{period}</th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-              </div>
-            </div>
+            </thead>
+            <tbody style={{ height: '100%' }}>
+              {history.map((record, index) => (
+                <tr key={`${record.date}-${index}`} style={{
+                  backgroundColor: index % 2 === 0 ? 'white' : '#f9f9f9',
+                  height: `${100/history.length}%`
+                }}>
+                  <td style={{
+                    padding: '4px 3px',
+                    textAlign: 'left',
+                    border: '1px solid #e0e0e0',
+                    fontSize: '12px',
+                    verticalAlign: 'middle'
+                  }}>
+                    <div style={{
+                      fontWeight: '600',
+                      color: '#333',
+                      fontSize: '13px'
+                    }}>
+                      {record.day}
+                      <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>{record.date}</div>
+                    </div>
+                  </td>
+                  {PERIODS.map(period => (
+                    <td key={`${record.date}-${period}`} style={{
+                      padding: '4px 3px',
+                      textAlign: 'center',
+                      border: '1px solid #e0e0e0',
+                      fontSize: '12px',
+                      verticalAlign: 'middle'
+                    }}>
+                      <div style={{
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        fontWeight: 'bold',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '0 auto',
+                        backgroundColor: record.periods[period] === 'P' ? '#4CAF50' : '#f44336',
+                        color: 'white',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                      }}>
+                        {record.periods[period]}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -297,48 +356,64 @@ const ClassDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/Anish.json')
-      .then(response => response.json())
-      .then(data => {
-        attendanceHistory = data;
-        // Create students array from the JSON data
-        const studentsList = Object.keys(data).map((name, index) => {
+    const studentNames = ['Anish', 'Bharath', 'Catherine', 'Divya', 'Ezhil', 'Gokul', 'Harini', 'Indhu', 'Karthik'];
+    
+    // Fetch all student JSON files
+    const fetchPromises = studentNames.map(name => 
+      fetch(`/${name}.json`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} for ${name}`);
+          }
+          return response.json();
+        })
+        .catch(error => {
+          console.error(`Error loading ${name} data:`, error);
+          return null; // Return null for failed requests
+        })
+    );
+
+    Promise.all(fetchPromises)
+      .then(results => {
+        // Combine all student data
+        const combinedData = {};
+        results.forEach((data, index) => {
+          if (data) {
+            Object.assign(combinedData, data);
+          }
+        });
+        
+        console.log('Loaded combined data:', combinedData);
+        attendanceHistory = combinedData;
+        
+        // Create students array from the combined JSON data
+        const studentsList = Object.keys(combinedData).map((name, index) => {
           // Get the latest attendance record for current day display
-          const latestRecord = data[name] && data[name].length > 0 ? data[name][data[name].length - 1] : null;
+          const latestRecord = combinedData[name] && combinedData[name].length > 0 ? 
+            combinedData[name][combinedData[name].length - 1] : null;
           return {
             id: index + 1,
             name: name,
             attendance: latestRecord ? latestRecord.periods : { I: 'A', II: 'A', III: 'A', IV: 'A', V: 'A', VI: 'A', VII: 'A' }
           };
         });
+        
+        console.log('Created students:', studentsList);
         setStudents(studentsList);
         setLoading(false);
       })
       .catch(error => {
         console.error('Error loading attendance data:', error);
+        // Fallback data for testing
+        const fallbackStudents = [
+          { id: 1, name: 'Anish', attendance: { I: 'P', II: 'P', III: 'P', IV: 'P', V: 'P', VI: 'P', VII: 'P' } }
+        ];
+        setStudents(fallbackStudents);
         setLoading(false);
       });
   }, []);
 
-  if (loading) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        fontSize: '18px',
-        color: '#666'
-      }}>
-        Loading attendance data...
-      </div>
-    );
-  }
-
-  if (selectedStudent) {
-    return <StudentProfile student={selectedStudent} onBack={() => setSelectedStudent(null)} />;
-  }
-  
+  // Move useMemo hook before conditional returns to follow Rules of Hooks
   const attendanceStats = useMemo(() => {
     let presentStudents = 0;
     let absentStudents = 0;
@@ -366,6 +441,25 @@ const ClassDashboard = () => {
   const getInitials = (name) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
+
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        fontSize: '18px',
+        color: '#666'
+      }}>
+        Loading attendance data...
+      </div>
+    );
+  }
+
+  if (selectedStudent) {
+    return <StudentProfile student={selectedStudent} onBack={() => setSelectedStudent(null)} />;
+  }
 
   return (
     <div style={{
