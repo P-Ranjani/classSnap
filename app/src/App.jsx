@@ -7,7 +7,7 @@ function App() {
 
 export default App*/
 
-import Dashboard from '../dashboard.jsx';
+import Dashboard from './Dashboard.jsx';
 
 function App() {
   return <Dashboard />;
