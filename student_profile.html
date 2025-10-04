@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="tel"] {
+            padding: 10px 14px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            background: white;
+            color: #374151;
+        }
+
+        .form-group input::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group select {
+            padding: 10px 14px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            background: white;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 24px;
+            margin-top: 8px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3b82f6;
+            cursor: pointer;
+        }
+
+        .radio-option label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 400;
+            color: #374151;
+            font-size: 0.8rem;
+        }
+
+        .file-upload {
+            position: relative;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-button {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #f9fafb;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            color: #374151;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .file-button::before {
+            content: "Choose File";
+            display: inline-block;
+            padding: 4px 8px;
+            border: 2px solid #8a8e93;
+            border-radius: 4px;
+            background: white;
+            margin-right: 8px;
+        }
+
+        .file-button:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .file-info {
+            margin-top: 6px;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .save-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .save-button:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        .save-button:active {
+            transform: translateY(0);
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 24px;
+                margin: 10px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .header h1 {
+                font-size: 1.25rem;
+            }
+
+            .save-button {
+                position: relative;
+                width: 100%;
+                margin-top: 32px;
+                bottom: auto;
+                right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Student Profile</h1>
+        </div>
+
+        <form id="studentProfileForm">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="studentName">Name</label>
+                    <input type="text" id="studentName" name="studentName" placeholder="Enter full name" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regNo">Reg.no</label>
+                        <input type="text" id="regNo" name="regNo" placeholder="Registration number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentClass">Class</label>
+                        <input type="text" id="studentClass" name="studentClass" placeholder="Class" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dob">DOB</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="male" name="gender" value="male" required>
+                                <label for="male">Male</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="female" name="gender" value="female" required>
+                                <label for="female">Female</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="other" name="gender" value="other" required>
+                                <label for="other">Other</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contactNo">Contact no.</label>
+                        <input type="tel" id="contactNo" name="contactNo" placeholder="Phone number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="parentContactNo">Parent contact no.</label>
+                        <input type="tel" id="parentContactNo" name="parentContactNo" placeholder="Parent phone number" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="photoUpload">Photo Upload</label>
+                    <div class="file-upload">
+                        <input type="file" id="photoUpload" name="photoUpload" class="file-input" accept="image/*">
+                        <div class="file-button" id="fileButton">
+                            <span id="fileName">No file chosen</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <button type="submit" form="studentProfileForm" class="save-button" id="saveButton">
+            Save
+        </button>
+    </div>
+
+    <script>
+        // Form elements
+        const form = document.getElementById('studentProfileForm');
+        const photoUpload = document.getElementById('photoUpload');
+        const fileButton = document.getElementById('fileButton');
+        const fileName = document.getElementById('fileName');
+        const saveButton = document.getElementById('saveButton');
+
+        // File upload handling
+        photoUpload.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                fileName.textContent = file.name;
+                fileButton.style.borderColor = '#22c55e';
+                fileButton.style.background = '#f0fdf4';
+            } else {
+                fileName.textContent = 'No file chosen';
+                fileButton.style.borderColor = '#d1d5db';
+                fileButton.style.background = '#f9fafb';
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(form);
+            const studentData = {
+                name: formData.get('studentName'),
+                regNo: formData.get('regNo'),
+                class: formData.get('studentClass'),
+                dob: formData.get('dob'),
+                gender: formData.get('gender'),
+                contactNo: formData.get('contactNo'),
+                parentContactNo: formData.get('parentContactNo'),
+                hasPhoto: photoUpload.files.length > 0
+            };
+
+            // Validate required fields
+            if (!studentData.name || !studentData.regNo || !studentData.class || 
+                !studentData.dob || !studentData.gender || !studentData.contactNo || 
+                !studentData.parentContactNo) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Show loading state
+            saveButton.innerHTML = 'Saving...';
+            saveButton.disabled = true;
+            saveButton.style.background = '#9ca3af';
+
+            // Simulate save process
+            setTimeout(() => {
+                alert(`Profile saved successfully!\n\nName: ${studentData.name}\nReg. No: ${studentData.regNo}\nClass: ${studentData.class}\nDOB: ${studentData.dob}\nGender: ${studentData.gender}\nContact: ${studentData.contactNo}\nParent Contact: ${studentData.parentContactNo}\nPhoto: ${studentData.hasPhoto ? 'Uploaded' : 'Not uploaded'}`);
+                
+                // Reset button
+                saveButton.innerHTML = 'Save';
+                saveButton.disabled = false;
+                saveButton.style.background = '#22c55e';
+                
+                // In a real application, you would redirect to dashboard
+                // window.location.href = 'student-dashboard.html';
+            }, 1500);
+        });
+
+        // Real-time validation feedback
+        document.querySelectorAll('input[required]').forEach(field => {
+            field.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    this.style.borderColor = '#ef4444';
+                } else {
+                    this.style.borderColor = '#22c55e';
+                }
+            });
+
+            field.addEventListener('input', function() {
+                if (this.style.borderColor === 'rgb(239, 68, 68)') {
+                    this.style.borderColor = '#d1d5db';
+                }
+            });
+        });
+
+        // Phone number formatting
+        document.querySelectorAll('input[type="tel"]').forEach(input => {
+            input.addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length <= 10) {
+                    this.value = value;
+                }
+            });
+        });
+
+        // Set max date for DOB (minimum 15 years old)
+        const dobInput = document.getElementById('dob');
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() - 15);
+        dobInput.max = maxDate.toISOString().split('T')[0];
+    </script>
+</body>
+</html>
