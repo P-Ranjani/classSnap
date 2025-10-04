@@ -55,8 +55,23 @@ const PERIODS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
 // Student Profile Page Component
 const StudentProfile = ({ student, onBack }) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [viewType, setViewType] = useState('week'); // 'week' or 'month'
   
-  const history = attendanceHistory[student.name] || [];
+  const studentData = attendanceHistory[student.name] || {};
+  
+  // Handle both old and new data structures
+  let history = [];
+  let monthlyData = {};
+  
+  if (studentData.weekly) {
+    // New structure
+    history = studentData.weekly || [];
+    monthlyData = studentData.monthly || {};
+  } else if (Array.isArray(studentData)) {
+    // Old structure (direct array)
+    history = studentData;
+    monthlyData = {}; // No monthly data in old structure
+  }
   
   const attendancePercentage = useMemo(() => {
     if (history.length === 0) return 0;
@@ -239,15 +254,145 @@ const StudentProfile = ({ student, onBack }) => {
         height: '100vh',
         overflow: 'hidden'
       }}>
-        <h2 style={{ 
-          marginBottom: '15px', 
-          fontSize: '24px', 
-          fontWeight: 'bold', 
-          color: '#333',
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '15px',
           flexShrink: 0
         }}>
-          Attendance History
-        </h2>
+          <h2 style={{ 
+            fontSize: '24px', 
+            fontWeight: 'bold', 
+            color: '#333',
+            margin: 0
+          }}>
+            Attendance History
+          </h2>
+          
+          {/* View Type Icons */}
+          <div style={{
+            display: 'flex',
+            gap: '8px'
+          }}>
+            <button
+              onClick={() => setViewType('week')}
+              style={{
+                width: '40px',
+                height: '40px',
+                border: '2px solid #e0e0e0',
+                borderRadius: '8px',
+                backgroundColor: viewType === 'week' ? '#4CAF50' : 'white',
+                color: viewType === 'week' ? 'white' : '#666',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '18px',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}
+              onMouseEnter={(e) => {
+                if (viewType !== 'week') {
+                  e.target.style.backgroundColor = '#f0f0f0';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (viewType !== 'week') {
+                  e.target.style.backgroundColor = 'white';
+                }
+              }}
+              title="Week View"
+            >
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '3px'
+              }}>
+                <div style={{
+                  width: '16px',
+                  height: '2px',
+                  backgroundColor: viewType === 'week' ? 'white' : '#333',
+                  borderRadius: '1px'
+                }}></div>
+                <div style={{
+                  width: '16px',
+                  height: '2px',
+                  backgroundColor: viewType === 'week' ? 'white' : '#333',
+                  borderRadius: '1px'
+                }}></div>
+                <div style={{
+                  width: '16px',
+                  height: '2px',
+                  backgroundColor: viewType === 'week' ? 'white' : '#333',
+                  borderRadius: '1px'
+                }}></div>
+              </div>
+            </button>
+            <button
+              onClick={() => setViewType('month')}
+              style={{
+                width: '40px',
+                height: '40px',
+                border: '2px solid #e0e0e0',
+                borderRadius: '8px',
+                backgroundColor: viewType === 'month' ? '#4CAF50' : 'white',
+                color: viewType === 'month' ? 'white' : '#666',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '18px',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}
+              onMouseEnter={(e) => {
+                if (viewType !== 'month') {
+                  e.target.style.backgroundColor = '#f0f0f0';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (viewType !== 'month') {
+                  e.target.style.backgroundColor = 'white';
+                }
+              }}
+              title="Month View"
+            >
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '2px',
+                width: '16px',
+                height: '16px'
+              }}>
+                <div style={{
+                  width: '6px',
+                  height: '6px',
+                  backgroundColor: viewType === 'month' ? 'white' : '#333',
+                  borderRadius: '1px'
+                }}></div>
+                <div style={{
+                  width: '6px',
+                  height: '6px',
+                  backgroundColor: viewType === 'month' ? 'white' : '#333',
+                  borderRadius: '1px'
+                }}></div>
+                <div style={{
+                  width: '6px',
+                  height: '6px',
+                  backgroundColor: viewType === 'month' ? 'white' : '#333',
+                  borderRadius: '1px'
+                }}></div>
+                <div style={{
+                  width: '6px',
+                  height: '6px',
+                  backgroundColor: viewType === 'month' ? 'white' : '#333',
+                  borderRadius: '1px'
+                }}></div>
+              </div>
+            </button>
+          </div>
+        </div>
         
         <div style={{
           flex: 0.9,
@@ -256,94 +401,227 @@ const StudentProfile = ({ student, onBack }) => {
           overflow: 'auto',
           height: '90%'
         }}>
-          <table style={{
-            width: '100%',
-            height: '100%',
-            borderCollapse: 'collapse',
-            backgroundColor: 'white',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-            tableLayout: 'fixed'
-          }}>
-            <thead>
-              <tr>
-                <th style={{
-                  backgroundColor: '#f8f9fa',
-                  padding: '8px 6px',
-                  textAlign: 'left',
-                  border: '1px solid #e0e0e0',
-                  fontWeight: 'bold',
-                  color: '#333',
-                  fontSize: '16px',
-                  width: '20%',
-                  height: '40px'
-                }}>Day</th>
-                {PERIODS.map(period => (
-                  <th key={period} style={{
+          {viewType === 'week' ? (
+            // Week View Table
+            <table style={{
+              width: '100%',
+              height: '100%',
+              borderCollapse: 'collapse',
+              backgroundColor: 'white',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+              tableLayout: 'fixed'
+            }}>
+              <thead>
+                <tr>
+                  <th style={{
                     backgroundColor: '#f8f9fa',
                     padding: '8px 6px',
-                    textAlign: 'center',
+                    textAlign: 'left',
                     border: '1px solid #e0e0e0',
                     fontWeight: 'bold',
                     color: '#333',
                     fontSize: '16px',
-                    width: `${80/PERIODS.length}%`,
+                    width: '20%',
                     height: '40px'
-                  }}>{period}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody style={{ height: '100%' }}>
-              {history.map((record, index) => (
-                <tr key={`${record.date}-${index}`} style={{
-                  backgroundColor: index % 2 === 0 ? 'white' : '#f9f9f9',
-                  height: history.length > 0 ? `${90/history.length}%` : 'auto'
-                }}>
-                  <td style={{
-                    padding: '8px 6px',
-                    textAlign: 'left',
-                    border: '1px solid #e0e0e0',
-                    fontSize: '16px',
-                    verticalAlign: 'middle'
-                  }}>
-                    <div style={{
-                      fontWeight: '600',
-                      color: '#333',
-                      fontSize: '16px'
-                    }}>
-                      {record.day}
-                      <div style={{ fontSize: '12px', color: '#666', marginTop: '3px' }}>{record.date}</div>
-                    </div>
-                  </td>
+                  }}>Day</th>
                   {PERIODS.map(period => (
-                    <td key={`${record.date}-${period}`} style={{
+                    <th key={period} style={{
+                      backgroundColor: '#f8f9fa',
                       padding: '8px 6px',
                       textAlign: 'center',
+                      border: '1px solid #e0e0e0',
+                      fontWeight: 'bold',
+                      color: '#333',
+                      fontSize: '16px',
+                      width: `${80/PERIODS.length}%`,
+                      height: '40px'
+                    }}>{period}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody style={{ height: '100%' }}>
+                {history.map((record, index) => (
+                  <tr key={`${record.date}-${index}`} style={{
+                    backgroundColor: index % 2 === 0 ? 'white' : '#f9f9f9',
+                    height: history.length > 0 ? `${90/history.length}%` : 'auto'
+                  }}>
+                    <td style={{
+                      padding: '8px 6px',
+                      textAlign: 'left',
                       border: '1px solid #e0e0e0',
                       fontSize: '16px',
                       verticalAlign: 'middle'
                     }}>
                       <div style={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        fontWeight: 'bold',
-                        fontSize: '16px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        margin: '0 auto',
-                        backgroundColor: record.periods[period] === 'P' ? '#4CAF50' : '#f44336',
-                        color: 'white',
-                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                        fontWeight: '600',
+                        color: '#333',
+                        fontSize: '16px'
                       }}>
-                        {record.periods[period]}
+                        {record.day}
+                        <div style={{ fontSize: '12px', color: '#666', marginTop: '3px' }}>{record.date}</div>
                       </div>
                     </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    {PERIODS.map(period => (
+                      <td key={`${record.date}-${period}`} style={{
+                        padding: '8px 6px',
+                        textAlign: 'center',
+                        border: '1px solid #e0e0e0',
+                        fontSize: '16px',
+                        verticalAlign: 'middle'
+                      }}>
+                        <div style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          fontWeight: 'bold',
+                          fontSize: '16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          margin: '0 auto',
+                          backgroundColor: record.periods[period] === 'P' ? '#4CAF50' : '#f44336',
+                          color: 'white',
+                          boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                        }}>
+                          {record.periods[period]}
+                        </div>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            // Month View - All Months Calendar Grid
+            <div style={{
+              height: '100%',
+              overflow: 'auto',
+              padding: '10px'
+            }}>
+              {Object.keys(monthlyData).length > 0 ? (
+                Object.entries(monthlyData).map(([monthName, monthData]) => (
+                <div key={monthName} style={{
+                  marginBottom: '30px',
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  padding: '15px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                }}>
+                  {/* Month Header */}
+                  <div style={{
+                    fontSize: '20px',
+                    fontWeight: 'bold',
+                    color: '#333',
+                    marginBottom: '15px',
+                    textAlign: 'center',
+                    paddingBottom: '10px',
+                    borderBottom: '2px solid #e0e0e0'
+                  }}>
+                    {monthName}
+                  </div>
+
+                  {/* Day Headers */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(7, 1fr)',
+                    gap: '2px',
+                    marginBottom: '10px'
+                  }}>
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                      <div key={day} style={{
+                        padding: '8px',
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                        color: '#666',
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: '4px',
+                        fontSize: '12px'
+                      }}>
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Calendar Days */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(7, 1fr)',
+                    gap: '2px'
+                  }}>
+                    {monthData.days.map((dayData, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          padding: '6px',
+                          textAlign: 'center',
+                          backgroundColor: dayData.attendance === 'P' ? '#e8f5e8' : '#fdeaea',
+                          border: `2px solid ${dayData.attendance === 'P' ? '#4CAF50' : '#f44336'}`,
+                          borderRadius: '4px',
+                          minHeight: '50px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = 'scale(1.05)';
+                          e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = 'scale(1)';
+                          e.target.style.boxShadow = 'none';
+                        }}
+                      >
+                        <div style={{
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          color: '#333',
+                          marginBottom: '2px'
+                        }}>
+                          {dayData.date}
+                        </div>
+                        <div style={{
+                          width: '16px',
+                          height: '16px',
+                          borderRadius: '50%',
+                          backgroundColor: dayData.attendance === 'P' ? '#4CAF50' : '#f44336',
+                          color: 'white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '10px',
+                          fontWeight: 'bold'
+                        }}>
+                          {dayData.attendance}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+              ) : (
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100%',
+                  fontSize: '18px',
+                  color: '#666',
+                  textAlign: 'center'
+                }}>
+                  <div>
+                    <div style={{ fontSize: '24px', marginBottom: '10px' }}>📅</div>
+                    <div>Monthly attendance data not available</div>
+                    <div style={{ fontSize: '14px', marginTop: '5px', color: '#999' }}>
+                      This student only has weekly attendance records
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -390,8 +668,18 @@ const ClassDashboard = () => {
         // Create students array from the combined JSON data
         const studentsList = Object.keys(combinedData).map((name, index) => {
           // Get the latest attendance record for current day display
-          const latestRecord = combinedData[name] && combinedData[name].length > 0 ? 
-            combinedData[name][combinedData[name].length - 1] : null;
+          const studentData = combinedData[name];
+          let latestRecord = null;
+          
+          // Handle both old and new data structures
+          if (studentData.weekly && studentData.weekly.length > 0) {
+            // New structure with weekly data
+            latestRecord = studentData.weekly[studentData.weekly.length - 1];
+          } else if (Array.isArray(studentData) && studentData.length > 0) {
+            // Old structure (direct array)
+            latestRecord = studentData[studentData.length - 1];
+          }
+          
           return {
             id: index + 1,
             name: name,
