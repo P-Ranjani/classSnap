@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Users, BookOpen, GraduationCap, LogOut, Settings, UserCheck } from 'lucide-react';
 import './app/src/admin.css';
-import staffData from './staffs.json';
-import studentsData from './students.json';
+import staffData from './data/staffs.json';
+import studentsData from './data/students.json';
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('classes');
